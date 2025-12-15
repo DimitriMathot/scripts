@@ -1,0 +1,145 @@
+# 🎁 Ma Wishlist de Noël
+
+Une **page web festive** qui récupère automatiquement ta liste d'envies depuis **Notion** et l’affiche avec un **design Noël**, badge “Acheté”, images, liens et notes.  
+Ajoute facilement des cadeaux via **bookmarklet** depuis n’importe quelle page web ! 🎄✨
+
+---
+
+## 🌟 Fonctionnalités
+
+- Affichage dynamique des cadeaux depuis **Notion**
+- Supporte :
+  - **Titre du cadeau**
+  - **Image**
+  - **Lien vers le produit**
+  - **Note**
+  - **Badge “Acheté”**
+- Design **grid responsive** et festive 🎅
+- API via **Cloudflare Worker** pour éviter les problèmes CORS
+- Cache activé pour rapidité ⚡
+- Ajout de cadeaux rapide via **bookmarklet**
+
+---
+
+## 🛠️ Installation / Déploiement
+
+### 1️⃣ Prérequis
+
+| Outil | Lien |
+|-------|------|
+| Notion | [notion.so](https://www.notion.so/) |
+| Cloudflare Workers | [workers.cloudflare.com](https://workers.cloudflare.com/) |
+| GitHub (optionnel) | [github.com](https://github.com/) |
+
+### 2️⃣ Variables d'environnement
+
+Dans ton Worker Cloudflare, crée les variables suivantes :
+
+
+
+NOTION_DATABASE_ID=<ID_de_ta_base>
+NOTION_TOKEN=<token_de_l_integration>
+
+
+> ⚠️ Le `database_id` doit être celui de la **full page database** et non d’une vue liée.
+
+### 3️⃣ Déploiement Worker
+
+- Copier le code du Worker
+- Déployer sur Cloudflare
+- Vérifier que le Worker renvoie le JSON de la base
+
+### 4️⃣ Lancer la page web
+
+- Page HTML statique intégrée au Worker ou hébergée séparément
+- Le script JS va **fetcher** les données du Worker
+- Affiche les cartes avec images, titres, notes et liens
+
+---
+
+## 🔗 Ajouter des cadeaux via Bookmarklet
+
+1. Crée un favori Chrome
+2. Dans l’URL, colle **tout sur une seule ligne** :
+
+```js
+javascript:(async function(){
+  const title = prompt("Titre du cadeau") || document.title;
+  const url = prompt("URL du produit") || location.href;
+  const image = prompt("URL image (facultatif)") || "";
+  const note = prompt("Note (facultatif)") || "";
+  try {
+    await fetch("https://notion-bridge.dimitri-mathot.workers.dev", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({title,url,image,note})
+    });
+    alert("🎁 Ajouté à la wishlist !");
+  } catch(e) {
+    alert("❌ Erreur : " + e.message);
+  }
+})();
+
+
+Clique dessus depuis n’importe quelle page pour ajouter un cadeau directement dans ta base Notion !
+
+🖼️ Exemple de structure JSON renvoyée
+[
+  {
+    "title": "Puzzle 1000 pièces",
+    "image": "https://example.com/puzzle.jpg",
+    "url": "https://example.com/acheter",
+    "note": "Pour les soirées d'hiver",
+    "bought": true
+  }
+]
+
+🎨 Design & CSS
+
+Grid responsive : grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))
+
+Carte avec :
+
+Image
+
+Titre
+
+Note
+
+Bouton “Voir le cadeau”
+
+Badge vert “Acheté”
+
+Couleurs de Noël :
+
+🔴 Rouge : #8b1e1e
+
+🟢 Vert : #2f6f4e
+
+🟡 Or : #d6b15c
+
+Animations douces au hover ✨
+
+⚡ Tips & Astuces
+
+Cache Cloudflare : Cache-Control: public, max-age=300 pour accélérer le chargement
+
+Les titres doivent être dans la colonne Title de la base Notion
+
+Images et liens sont optionnels
+
+Badge “Acheté” visible automatiquement si coché dans Notion
+
+👀 Aperçu
+
+❤️ Remerciements
+
+Notion API
+
+Cloudflare Workers
+
+Inspirations CSS festive & grid 🎨
+
+📄 Licence
+
+MIT © Dimitri Mathot
