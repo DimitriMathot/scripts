@@ -1,3 +1,0 @@
-(()=>{const e=[];e.push("titre;url_produit;url_image");const t=document.querySelectorAll(".productsbox ul li");t.forEach(t=>{const r=t.querySelector(".prinfo");if(let o=r.querySelector("h3 a");o||(o=r.querySelector("h3")),o||(o=null);if(!o)return;const c=o.innerText.replace(/[
-;]/g," ").trim(),n=o.href,a=t.querySelector(".primg a img"),i=a?.getAttribute("src")||a?.getAttribute("data-src")||a?.dataset?.src||"";e.push(`${c};${n??""};${i}`)});const r=e.join("
-"),o=new Blob([r],{type:"text/csv;charset=utf-8"}),c=URL.createObjectURL(o),n=document.createElement("a");n.href=c,n.download="mesenvies.csv",document.body.appendChild(n),n.click(),document.body.removeChild(n),URL.revokeObjectURL(c),console.log(`✅ Export terminé`);
